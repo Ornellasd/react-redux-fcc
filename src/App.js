@@ -1,4 +1,25 @@
 import React, { useState } from 'react'
+import { createStore } from 'redux'
+
+const ADD = 'ADD'
+
+const addMessage = (message) => {
+  return {
+    type: ADD,
+    message
+  }
+}
+
+const messageReducer = (state = [], action) => {
+  switch(action.type) {
+    case ADD:
+      return [...state, action.message]
+    default:
+      return state
+  }
+}
+
+const store = createStore(messageReducer)
 
 const App = () => {
   const [input, setInput] = useState('')
@@ -9,7 +30,10 @@ const App = () => {
   }
 
   const submitMessage = () => {
-    setMessages(messages.concat(input))
+    store.dispatch({ 
+      type: 'ADD',
+      message: input 
+    })
     setInput('')
   }
 
@@ -18,7 +42,7 @@ const App = () => {
       <input onChange={handleChange} />
       <button onClick={submitMessage}>Submit</button>
       <ul>
-        {messages.map(message =>
+        {store.getState().map(message =>
           <li>{message}</li>
         )}
       </ul>
